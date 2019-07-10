@@ -1,0 +1,24 @@
+create table tb_user(
+u_id VARCHAR(10) NOT NULL PRIMARY KEY,
+u_pw VARCHAR(10) NOT NULL,
+u_level VARCHAR(10) NOT NULL,
+u_name VARCHAR(20) NOT NULL,
+u_email VARCHAR(80),
+u_phone VARCHAR(80),
+u_addr VARCHAR(80)
+)DEFAULT CHARSET=euckr;
+
+
+
+create table tb_goods(
+g_code VARCHAR(20) NOT NULL PRIMARY KEY,
+u_id VARCHAR(20) NOT NULL,
+g_name VARCHAR(20) NOT NULL,
+g_cate VARCHAR(20) NOT NULL,
+g_price VARCHAR(20) NOT NULL,
+g_color VARCHAR(20) NOT NULL,
+g_size VARCHAR(20) NOT NULL,
+g_date VARCHAR(20) NOT NULL,
+g_desc VARCHAR(80)
+)DEFAULT CHARSET=euckr;
+
