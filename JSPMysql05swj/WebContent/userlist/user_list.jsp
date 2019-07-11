@@ -1,12 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=EUC-KR"
     pageEncoding="EUC-KR"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<%@ page import="java.sql.Connection"%>
-<%@ page import="java.sql.PreparedStatement"%>
-<%@ page import="java.sql.ResultSet"%>
-<%@ page import="java.sql.DriverManager"%>
-<%@ page import="java.sql.SQLException"%>
-<%@ page import="kr.or.ksmart.driverdb.DriverDB"%>
+<%@ page import="kr.or.ksmart.dao.Mdao"%>
+<%@ page import="kr.or.ksmart.dto.User"%>
+<%@ page import="java.util.ArrayList"%>
 
 <html>
 <head>
@@ -33,45 +30,27 @@
 		<td>삭제</td>
 	</tr>
 <%
-	Connection conn = null;
-	PreparedStatement pstmt = null;
-	ResultSet rs = null;
+	Mdao dao = new Mdao();
+	ArrayList<User> memlist = dao.mAllSelect();
 	
-	try {
-		DriverDB db = new DriverDB();
-		conn = db.driverDbcon();
-		System.out.println(conn + " <- conn user_list.jsp");
-		
-		pstmt = conn.prepareStatement("SELECT * FROM tb_user");
-		System.out.println(pstmt + " <- pstmt user_list.jsp");
-		
-		rs = pstmt.executeQuery();
-		System.out.println(rs + " <- rs user_list.jsp");
-		
-		while(rs.next()) {
+	System.out.println(memlist + " <- memlist   user_list.jsp");
+	System.out.println(memlist.size() + " <- memlist.size()   user_list.jsp");
+	
+	for(int i=0; i<memlist.size(); i++) {
+		User mem = memlist.get(i);
 %>
-		<tr>
-			<td><%= rs.getString("u_id")%></td>
-			<td><%= rs.getString("u_pw")%></td>
-			<td><%= rs.getString("u_level")%></td>
-			<td><%= rs.getString("u_name")%></td>
-			<td><%= rs.getString("u_email")%></td>
-			<td><%= rs.getString("u_phone")%></td>
-			<td><%= rs.getString("u_addr")%></td>
-			<td><a href='<%=request.getContextPath()%>/userupdate/user_update_form.jsp?send_id=<%= rs.getString("u_id")%>'>수정하기</a></td>
-			<td><a href='<%=request.getContextPath()%>/userdelete/user_delete_pro.jsp?send_id=<%= rs.getString("u_id")%>'>삭제하기</a></td>
-		</tr>
-<%
-		}
-	} catch(SQLException e) {
-		out.println(e.getMessage());
-		e.printStackTrace();
-	} finally {
-		if(rs != null) try {rs.close();} catch(SQLException e) {}
-		if(pstmt != null) try {pstmt.close();} catch(SQLException e) {}
-		if(conn != null) try {conn.close();} catch(SQLException e) {}
-	}
-%>
+	<tr>
+		<td><%=mem.getU_id()%></td>
+		<td><%=mem.getU_pw()%></td>
+		<td><%=mem.getU_level()%></td>
+		<td><%=mem.getU_name()%></td>
+		<td><%=mem.getU_email()%></td>
+		<td><%=mem.getU_phone()%></td>
+		<td><%=mem.getU_addr()%></td>
+		<td><a href='<%=request.getContextPath()%>/mupdate/m_update_form.jsp?send_id=<%=mem.getU_id()%>'>수정하기</a></td>
+		<td><a href='<%=request.getContextPath()%>/mdelete/m_delete_pro.jsp?send_id=<%=mem.getU_id()%>'>삭제하기</a></td>
+	</tr>
+<%	}%>
 </table>
 
 <%@ include file="/module/hadan.jsp" %>

@@ -1,12 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=EUC-KR"
     pageEncoding="EUC-KR"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<%@ page import = "java.sql.DriverManager" %>
-<%@ page import = "java.sql.Connection" %>
-<%@ page import = "java.sql.PreparedStatement" %>
-<%@ page import = "java.sql.ResultSet" %>
-<%@ page import = "java.sql.SQLException" %>
-<%@ page import="kr.or.ksmart.driverdb.DriverDB"%>
+<%@ page import="kr.or.ksmart.dao.Mdao"%>
+<%@ page import="kr.or.ksmart.dto.User"%>
+<%@ page import="java.util.ArrayList"%>
 
 <html>
 <head>
@@ -45,77 +42,24 @@
 	System.out.println(sk + " <- sk");
 	System.out.println(sv + " <- sv");
 	
-	Connection conn = null;
-	PreparedStatement pstmt = null;
-	ResultSet rs = null;
+	Mdao dao = new Mdao();
+	ArrayList<User> memlist = dao.mSearch(sk, sv);
 	
-	try{
-		DriverDB db = new DriverDB();
-		conn = db.driverDbcon();
-		System.out.println(conn + "<-- conn   user_search_list.jsp");
-		if(conn != null){
-			out.println("01 DB연결 성공");
-		}else{
-			out.println("02 DB연결 실패");
-		}
-		
-		if(sk == null & sv == null) {
-			System.out.println("01   sk == null & sv == null");
-			pstmt = conn.prepareStatement("SELECT * FROM tb_user");
-			
-		} else if(sk != null & sv.equals("")) {
-			System.out.println("02   sk != null & sv.equals()");
-			pstmt = conn.prepareStatement("SELECT * FROM tb_user");
-			
-		} else if (sk != null & sv != null) {
-			System.out.println("03   sk != null & sv != null");
-			if(sk.equals("u_id")) {
-				pstmt = conn.prepareStatement("SELECT * FROM tb_user WHERE u_id=?");
-				
-			} else if(sk.equals("u_level")) {
-				pstmt = conn.prepareStatement("SELECT * FROM tb_user WHERE u_level=?");
-				
-			} else if(sk.equals("u_name")) {
-				pstmt = conn.prepareStatement("SELECT * FROM tb_user WHERE u_name=?");
-				
-			} else if(sk.equals("u_email")) {
-				pstmt = conn.prepareStatement("SELECT * FROM tb_user WHERE u_email=?");
-			}
-			
-			pstmt.setString(1, sv);
-		}
-		
-		System.out.println(pstmt + "<-- pstmt   user_search_list.jsp");
-		
-		rs = pstmt.executeQuery();
-		System.out.println(rs + "<-- rs   user_search_list.jsp");
-		
-		while(rs.next()){
+	for(int i=0; i<memlist.size(); i++) {
+		User user = memlist.get(i);
 %>
 		<tr>
-			<td><%= rs.getString("u_id")%></td>
-			<td><%= rs.getString("u_pw")%></td>
-			<td><%= rs.getString("u_level")%></td>
-			<td><%= rs.getString("u_name")%></td>
-			<td><%= rs.getString("u_email")%></td>
-			<td><%= rs.getString("u_phone")%></td>
-			<td><%= rs.getString("u_addr")%></td>
-			<td><a href='<%=request.getContextPath()%>/userupdate/user_update_form.jsp?send_id=<%=rs.getString("u_id")%>'>수정하기</a></td>
-			<td><a href='<%=request.getContextPath()%>/userdelete/user_delete_pro.jsp?send_id=<%=rs.getString("u_id")%>'>삭제하기</a></td>
+			<td><%=user.getU_id()%></td>
+			<td><%=user.getU_pw()%></td>
+			<td><%=user.getU_level()%></td>
+			<td><%=user.getU_name()%></td>
+			<td><%=user.getU_email()%></td>
+			<td><%=user.getU_phone()%></td>
+			<td><%=user.getU_addr()%></td>
+			<td><a href='<%=request.getContextPath()%>/userupdate/user_update_form.jsp?send_id=<%=user.getU_id()%>'>수정하기</a></td>
+			<td><a href='<%=request.getContextPath()%>/userdelete/user_delete_pro.jsp?send_id=<%=user.getU_id()%>'>삭제하기</a></td>
 		</tr>
-<%		
-		}
-		
-	} catch(SQLException ex) {
-		out.println(ex.getMessage());
-		ex.printStackTrace();
-	} finally {
-		if (rs != null) try { rs.close(); } catch(SQLException ex) {}
-		if (pstmt != null) try { pstmt.close(); } catch(SQLException ex) {}
-		if (conn != null) try { conn.close(); } catch(SQLException ex) {}
-	}
-%>	
-
+<%	}%>
 </table>
 
 <%@ include file="/module/hadan.jsp" %>

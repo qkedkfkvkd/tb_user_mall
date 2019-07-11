@@ -7,103 +7,15 @@
 <%@ page import="java.sql.DriverManager"%>
 <%@ page import="java.sql.SQLException"%>
 
+
+<%@ page import="kr.or.ksmart.dao.Gdao"%>
+
+<%	request.setCharacterEncoding("euc-kr");%>
+<jsp:useBean id="g" class="kr.or.ksmart.dto.Goods"/>
+<jsp:setProperty name="g" property="*"/>
+
 <%
-	request.setCharacterEncoding("euc-kr");
-	String u_id = request.getParameter("u_id");
-	String g_name = request.getParameter("g_name");
-	String g_cate = request.getParameter("g_cate");
-	String g_price = request.getParameter("g_price");
-	String g_color = request.getParameter("g_color");
-	String g_size = request.getParameter("g_size");
-	String g_desc = request.getParameter("g_desc");
-	
-	
-	System.out.println(u_id + " <- u_id   goods_insert_pro.jsp");
-	System.out.println(g_name + " <- g_name   goods_insert_pro.jsp");
-	System.out.println(g_cate + " <- g_cate   goods_insert_pro.jsp");
-	System.out.println(g_price + " <- g_price   goods_insert_pro.jsp");
-	System.out.println(g_color + " <- g_color   goods_insert_pro.jsp");
-	System.out.println(g_size + " <- g_size   goods_insert_pro.jsp");
-	System.out.println(g_desc + " <- g_desc   goods_insert_pro.jsp");
-	
-	
-	Connection conn = null;
-	PreparedStatement pstmt = null;
-	ResultSet rs = null;
-	
-	String url = "jdbc:mysql://localhost:3306/db05swj?" +
-				 "useUnicode=true&characterEncoding=euckr";
-	String user = "dbid05swj";
-	String password = "dbpw05swj";
-	try {
-		Class.forName("com.mysql.jdbc.Driver");
-		conn = DriverManager.getConnection(url, user, password);
-		System.out.println(conn + " <- conn   goods_insert_pro.jsp");
-		
-		pstmt = conn.prepareStatement("SELECT DISTINCT SUBSTR(g_code,1,6) AS temp_code FROM tb_goods");
-		System.out.println(pstmt + " <- pstmt   goods_insert_pro.jsp");
-		
-		rs = pstmt.executeQuery();
-		System.out.println(rs + " <- rs   goods_insert_pro.jsp");
-		
-		rs.next();
-		String temp_g_code = "";
-		if(rs.next()) {
-			temp_g_code = rs.getString("temp_code");
-		}
-		System.out.println(temp_g_code + " <- temp_g_code   goods_insert_pro.jsp");
-		
-		
-		try {rs.close();} catch(SQLException e) {}
-		try {pstmt.close();} catch(SQLException e) {}
-		
-		
-		pstmt = conn.prepareStatement("SELECT MAX(SUBSTR(g_code,7)) AS max_code FROM tb_goods");
-		System.out.println(pstmt + " <- pstmt   goods_insert_pro.jsp");
-		
-		rs = pstmt.executeQuery();
-		System.out.println(rs + " <- rs   goods_insert_pro.jsp");
-		
-		String temp_max = "";
-		if(rs.next()) {
-			temp_max = rs.getString("max_code");
-		}
-		System.out.println(temp_max + " <- temp_max   goods_insert_pro.jsp");
-		
-		int max_code = Integer.parseInt(temp_max);
-		System.out.println(max_code + " <- max_code   goods_insert_pro.jsp");
-		
-		max_code++;
-		System.out.println(max_code + " <- max_code++   goods_insert_pro.jsp");
-		
-		String g_code = temp_g_code+max_code;
-		System.out.println(g_code + " <- g_code   goods_insert_pro.jsp");
-		
-		
-		try {rs.close();} catch(SQLException e) {}
-		try {pstmt.close();} catch(SQLException e) {}
-		
-		
-		pstmt = conn.prepareStatement("INSERT INTO tb_goods VALUES(?, ?, ?, ?, ?, ?, ?, NOW(), ?)");
-		pstmt.setString(1, g_code);
-		pstmt.setString(2, u_id);
-		pstmt.setString(3, g_name);
-		pstmt.setString(4, g_cate);
-		pstmt.setString(5, g_price);
-		pstmt.setString(6, g_color);
-		pstmt.setString(7, g_size);
-		pstmt.setString(8, g_desc);
-		System.out.println(pstmt + " <- pstmt   goods_insert_pro.jsp");
-		
-		int result = pstmt.executeUpdate();
-		System.out.println(result + " <- result   goods_insert_pro.jsp");
-		
-		response.sendRedirect(request.getContextPath() + "/goods/goods_list.jsp");
-	} catch(SQLException e) {
-		out.println(e.getMessage());
-		e.printStackTrace();
-	} finally {
-		if(pstmt != null) try {pstmt.close();} catch(SQLException e) {}
-		if(conn != null) try {conn.close();} catch(SQLException e) {}
-	}
+	Gdao dao = new Gdao();
+	dao.gInsert(g);
+	response.sendRedirect(request.getContextPath() + "/goods/goods_list.jsp");
 %>
