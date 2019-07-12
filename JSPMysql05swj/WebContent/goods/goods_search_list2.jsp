@@ -37,7 +37,7 @@
 <%
 	request.setCharacterEncoding("euc-kr");
 	Gdao dao = new Gdao();
-	Map<String, Object> map = dao.gSearchJoinDate(g);
+	Map<String, Object> map = dao.gSearchJoinDateGname(g);
 	
 	ArrayList<User> mlist = (ArrayList<User>)map.get("mlist");
 	ArrayList<Goods> glist = (ArrayList<Goods>)map.get("glist");

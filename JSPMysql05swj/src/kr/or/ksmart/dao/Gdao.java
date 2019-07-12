@@ -14,6 +14,71 @@ import kr.or.ksmart.dto.User;
 
 public class Gdao {
 	
+	// 상품검색-조인쿼리(상품 테이블만)_기간별_상품명
+	public Map<String, Object> gSearchJoinDateGname(Goods g) throws ClassNotFoundException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		Map<String, Object> map = null;
+		
+		try{
+			DriverDB db = new DriverDB();
+			conn = db.driverDbcon();
+			System.out.println(conn + "<-- conn   gSearchJoinDateGname()   Gdao.java");
+			
+			String sql = "SELECT u.u_id, u.u_name, "
+					   + "g.g_code, g.g_name, g.g_cate, g.g_price, g.g_date "
+					   + "FROM tb_user AS u INNER JOIN tb_goods AS g "
+					   + "ON u.u_id = g.u_id "
+					   + "AND g.g_name = ? "
+					   + "AND DATE_FORMAT(g_date,'%Y-%m-%d') "
+					   + "BETWEEN ? AND ?";
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, g.getG_name());
+			pstmt.setString(2, g.getDate_min());
+			pstmt.setString(3, g.getDate_max());
+			System.out.println(pstmt + "<-- pstmt   gSearchJoinDateGname()   Gdao.java");
+			
+			rs = pstmt.executeQuery();
+			System.out.println(rs + "<-- rs   gSearchJoinDateGname()   Gdao.java");
+			
+			map = new HashMap<String, Object>();
+			
+			ArrayList<User> mlist = new ArrayList<>();
+			ArrayList<Goods> glist = new ArrayList<>();
+			
+			while(rs.next()){
+				User mem = new User();
+				Goods goods = new Goods();
+				
+				mem.setU_id(rs.getString("u_id"));
+				mem.setU_name(rs.getString("u_name"));
+				
+				goods.setG_code(rs.getString("g_code"));
+				goods.setG_name(rs.getString("g_name"));
+				goods.setG_cate(rs.getString("g_cate"));
+				goods.setG_price(rs.getString("g_price"));
+				goods.setG_date(rs.getString("g_date"));
+				
+				mlist.add(mem);
+				glist.add(goods);
+			}
+			
+			map.put("mlist", mlist);
+			map.put("glist", glist);
+			
+		} catch(SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			if (rs != null) try { rs.close(); } catch(SQLException ex) {}
+			if (pstmt != null) try { pstmt.close(); } catch(SQLException ex) {}
+			if (conn != null) try { conn.close(); } catch(SQLException ex) {}
+		}
+		return map;
+	}
+	
+	
 	// 상품검색-조인쿼리(상품 테이블만)_기간별_
 	public Map<String, Object> gSearchJoinDate(Goods g) throws ClassNotFoundException {
 		Connection conn = null;
