@@ -11,6 +11,152 @@ import kr.or.ksmart.dto.Goods;
 
 public class Gdao {
 	
+	// 상품 리스트 전체 조회(관리자, 판매자 권한만)
+	public ArrayList<Goods> goodsAllSelect() throws ClassNotFoundException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		ArrayList<Goods> glist = null;
+		try {
+			DriverDB db = new DriverDB();
+			conn = db.driverDbcon();
+			System.out.println(conn + "<-- conn   goodsAllSelect()   Gdao.java");
+			
+			String sql = "SELECT g_code, u_id, g_name, g_price, g_color, g_size from tb_goods";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			rs = pstmt.executeQuery();
+			System.out.println(rs + "<-- rs   goodsAllSelect()   Gdao.java");
+			
+			glist = new ArrayList<>();
+			
+			while(rs.next()){
+				Goods g = new Goods();
+				
+				g.setG_code(rs.getString("g_code"));
+				g.setG_name(rs.getString("g_name"));
+				g.setU_id(rs.getString("u_id"));
+				g.setG_price(rs.getString("g_price"));
+				g.setG_color(rs.getString("g_color"));
+				g.setG_size(rs.getString("g_size"));
+				
+				glist.add(g);
+			}
+		} catch(SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			if (rs != null) try { rs.close(); } catch(SQLException ex) {}
+			if (pstmt != null) try { pstmt.close(); } catch(SQLException ex) {}
+			if (conn != null) try { conn.close(); } catch(SQLException ex) {}
+		}
+		return glist;
+	}
+	
+	
+	// 상품 삭제 처리
+	public void gDelete(String g_code) throws ClassNotFoundException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		try {
+			DriverDB db = new DriverDB();
+			conn = db.driverDbcon();
+			System.out.println(conn + "<-- conn   gDelete()   Gdao.java");
+			
+			pstmt = conn.prepareStatement("DELETE FROM tb_goods WHERE g_code=?");
+			pstmt.setString(1, g_code);
+			System.out.println(pstmt + " : pstmt   gDelete()   Gdao.java");
+			
+			int result = pstmt.executeUpdate();
+			System.out.println(result + " : result   gDelete()   Gdao.java");
+			
+		} catch(SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			if (pstmt != null) try { pstmt.close(); } catch(SQLException ex) {}
+			if (conn != null) try { conn.close(); } catch(SQLException ex) {}
+		}
+	}
+	
+	
+	// 상품 수정 처리
+	public void gUpdate(Goods g) throws ClassNotFoundException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		try {
+			DriverDB db = new DriverDB();
+			conn = db.driverDbcon();
+			System.out.println(conn + "<-- conn   gUpdate()   Gdao.java");
+			
+			String sql = "UPDATE tb_goods SET " 
+						+"g_name=?, g_cate=?, g_price=?, g_color=?, g_size=?, g_date=now(), g_desc=? WHERE g_code=?";
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, g.getG_name());
+			pstmt.setString(2, g.getG_cate());
+			pstmt.setString(3, g.getG_price());
+			pstmt.setString(4, g.getG_color());
+			pstmt.setString(5, g.getG_size());
+			pstmt.setString(6, g.getG_desc());
+			pstmt.setString(7, g.getG_code());
+			System.out.println(pstmt + " : pstmt   gUpdate()   Gdao.java");
+			
+			int result = pstmt.executeUpdate();
+			if(result != 0) {
+				System.out.println("성공적으로 수정되었습니다.   gUpdate()   Gdao.java");
+				System.out.println("성공적으로 수정된 행 갯수 : " + result + "   gUpdate()   Gdao.java");
+			}
+			
+			
+		} catch(SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			if (pstmt != null) try { pstmt.close(); } catch(SQLException ex) {}
+			if (conn != null) try { conn.close(); } catch(SQLException ex) {}
+		}
+	}
+	
+	
+	// 상품 상세보기
+	public Goods gDetail(String g_code) throws ClassNotFoundException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		Goods goods = new Goods();
+		try{
+			DriverDB db = new DriverDB();
+			conn = db.driverDbcon();
+			System.out.println(conn + "<-- conn   gDetail()   Gdao.java");
+			
+			pstmt = conn.prepareStatement("SELECT * FROM tb_goods WHERE g_code=?");
+			pstmt.setString(1, g_code);
+			System.out.println(pstmt + " : pstmt   gDetail()   Gdao.java");
+			
+			rs = pstmt.executeQuery();
+			System.out.println(rs + " : rs   gDetail()   Gdao.java");
+			
+			if(rs.next()) {
+				goods.setG_code(rs.getString("g_code"));
+				goods.setU_id(rs.getString("u_id"));
+				goods.setG_name(rs.getString("g_name"));
+				goods.setG_cate(rs.getString("g_cate"));
+				goods.setG_price(rs.getString("g_price"));
+				goods.setG_color(rs.getString("g_color"));
+				goods.setG_size(rs.getString("g_size"));
+				goods.setG_date(rs.getString("g_date"));
+				goods.setG_desc(rs.getString("g_desc"));
+			}
+		} catch(SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			if (rs != null) try { rs.close(); } catch(SQLException ex) {}
+			if (pstmt != null) try { pstmt.close(); } catch(SQLException ex) {}
+			if (conn != null) try { conn.close(); } catch(SQLException ex) {}
+		}
+		return goods;
+	}
+	
+	
 	// 상품검색(상품 테이블만)_기간별_상품명_가격구간_가격 정렬
 	public ArrayList<Goods> gSearchSort(Goods g) throws ClassNotFoundException {
 		Connection conn = null;
