@@ -18,6 +18,9 @@
 	<input type="text" name="date_min"> ~
 	<input type="text" name="date_max"><br/>
 	상품명 : <input type="text" name="g_name"><br/>
+	가격 검색 :
+	<input type="text" name="price_min"> ~
+	<input type="text" name="price_max"><br/>
 	<button type="submit">검색버튼</button>
 </form>
 
