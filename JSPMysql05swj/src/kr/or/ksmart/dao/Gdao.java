@@ -5,11 +5,77 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import kr.or.ksmart.driverdb.DriverDB;
 import kr.or.ksmart.dto.Goods;
+import kr.or.ksmart.dto.User;
 
 public class Gdao {
+	
+	// 상품검색-조인쿼리(상품 테이블만)_기간별_
+	public Map<String, Object> gSearchJoinDate(Goods g) throws ClassNotFoundException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		Map<String, Object> map = null;
+		
+		try{
+			DriverDB db = new DriverDB();
+			conn = db.driverDbcon();
+			System.out.println(conn + "<-- conn   gSearchJoinDate()   Gdao.java");
+			
+			String sql = "SELECT u.u_id, u.u_name, "
+					   + "g.g_code, g.g_name, g.g_cate, g.g_price, g.g_date "
+					   + "FROM tb_user AS u INNER JOIN tb_goods AS g "
+					   + "ON u.u_id = g.u_id "
+					   + "AND DATE_FORMAT(g_date,'%Y-%m-%d') "
+					   + "BETWEEN ? AND ?";
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, g.getDate_min());
+			pstmt.setString(2, g.getDate_max());
+			System.out.println(pstmt + "<-- pstmt   gSearchJoinDate()   Gdao.java");
+			
+			rs = pstmt.executeQuery();
+			System.out.println(rs + "<-- rs   gSearchJoinDate()   Gdao.java");
+			
+			map = new HashMap<String, Object>();
+			
+			ArrayList<User> mlist = new ArrayList<>();
+			ArrayList<Goods> glist = new ArrayList<>();
+			
+			while(rs.next()){
+				User mem = new User();
+				Goods goods = new Goods();
+				
+				mem.setU_id(rs.getString("u_id"));
+				mem.setU_name(rs.getString("u_name"));
+				
+				goods.setG_code(rs.getString("g_code"));
+				goods.setG_name(rs.getString("g_name"));
+				goods.setG_cate(rs.getString("g_cate"));
+				goods.setG_price(rs.getString("g_price"));
+				goods.setG_date(rs.getString("g_date"));
+				
+				mlist.add(mem);
+				glist.add(goods);
+			}
+			
+			map.put("mlist", mlist);
+			map.put("glist", glist);
+			
+		} catch(SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			if (rs != null) try { rs.close(); } catch(SQLException ex) {}
+			if (pstmt != null) try { pstmt.close(); } catch(SQLException ex) {}
+			if (conn != null) try { conn.close(); } catch(SQLException ex) {}
+		}
+		return map;
+	}
+	
 	
 	// 상품 리스트 전체 조회(관리자, 판매자 권한만)
 	public ArrayList<Goods> goodsAllSelect() throws ClassNotFoundException {
@@ -167,7 +233,7 @@ public class Gdao {
 		try{
 			DriverDB db = new DriverDB();
 			conn = db.driverDbcon();
-			System.out.println(conn + "<-- conn   gSearchDateGname(Goods)   Gdao.java");
+			System.out.println(conn + "<-- conn   gSearchSort(Goods)   Gdao.java");
 			
 			String sql = "SELECT g_code, g_name, g_cate, g_price, g_date FROM tb_goods "
 					   + "WHERE g_name=? AND DATE_FORMAT(g_date,'%Y-%m-%d') BETWEEN ? AND ? "
@@ -180,10 +246,10 @@ public class Gdao {
 			pstmt.setString(3, g.getDate_max());
 			pstmt.setInt(4, Integer.parseInt(g.getPrice_min()));
 			pstmt.setInt(5, Integer.parseInt(g.getPrice_max()));
-			System.out.println(pstmt + "<-- pstmt   gSearchDateGname(Goods)   Gdao.java");
+			System.out.println(pstmt + "<-- pstmt   gSearchSort(Goods)   Gdao.java");
 			
 			rs = pstmt.executeQuery();
-			System.out.println(rs + "<-- rs   gSearchDateGname(Goods)   Gdao.java");
+			System.out.println(rs + "<-- rs   gSearchSort(Goods)   Gdao.java");
 			
 			goodlist = new ArrayList<>();
 			
@@ -219,7 +285,7 @@ public class Gdao {
 		try{
 			DriverDB db = new DriverDB();
 			conn = db.driverDbcon();
-			System.out.println(conn + "<-- conn   gSearchDateGname(Goods)   Gdao.java");
+			System.out.println(conn + "<-- conn   gSearchDateGnamePrice(Goods)   Gdao.java");
 			
 			String sql = "SELECT g_code, g_name, g_cate, g_price, g_date FROM tb_goods "
 					   + "WHERE g_name=? AND DATE_FORMAT(g_date,'%Y-%m-%d') BETWEEN ? AND ? "
@@ -231,10 +297,10 @@ public class Gdao {
 			pstmt.setString(3, g.getDate_max());
 			pstmt.setInt(4, Integer.parseInt(g.getPrice_min()));
 			pstmt.setInt(5, Integer.parseInt(g.getPrice_max()));
-			System.out.println(pstmt + "<-- pstmt   gSearchDateGname(Goods)   Gdao.java");
+			System.out.println(pstmt + "<-- pstmt   gSearchDateGnamePrice(Goods)   Gdao.java");
 			
 			rs = pstmt.executeQuery();
-			System.out.println(rs + "<-- rs   gSearchDateGname(Goods)   Gdao.java");
+			System.out.println(rs + "<-- rs   gSearchDateGnamePrice(Goods)   Gdao.java");
 			
 			goodlist = new ArrayList<>();
 			
@@ -318,7 +384,7 @@ public class Gdao {
 		try{
 			DriverDB db = new DriverDB();
 			conn = db.driverDbcon();
-			System.out.println(conn + "<-- conn   mSearchDate(Goods)   Gdao.java");
+			System.out.println(conn + "<-- conn   gSearchDate(Goods)   Gdao.java");
 			
 			String sql = "SELECT g_code, g_name, g_cate, g_price, g_date FROM tb_goods "
 					   + "WHERE DATE_FORMAT(g_date,'%Y-%m-%d') BETWEEN ? AND ? ";
@@ -326,10 +392,10 @@ public class Gdao {
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, g.getDate_min());
 			pstmt.setString(2, g.getDate_max());
-			System.out.println(pstmt + "<-- pstmt   mSearchDate(Goods)   Gdao.java");
+			System.out.println(pstmt + "<-- pstmt   gSearchDate(Goods)   Gdao.java");
 			
 			rs = pstmt.executeQuery();
-			System.out.println(rs + "<-- rs   mSearchDate(Goods)   Gdao.java");
+			System.out.println(rs + "<-- rs   gSearchDate(Goods)   Gdao.java");
 			
 			goodlist = new ArrayList<>();
 			

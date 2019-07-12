@@ -33,23 +33,9 @@ $(function() {
 
 <h3>조인쿼리를 이용하여 검색하기</h3>
 <form action="<%=request.getContextPath()%>/goods/goods_search_list2.jsp" method="post">
-	정렬 기준 선택 :
-	<select name="orderby">
-		<option value="g_date">기간별</option>
-		<option value="g_name">상품명</option>
-		<option value="g_price*1">가격</option>
-	</select>
-	<select name="sort">
-		<option value="asc" selected="selected">오름차순</option>
-		<option value="desc">내림차순</option>
-	</select><br/>
 	기간 검색 :
 	<input type="text" name="date_min"> ~
 	<input type="text" name="date_max"><br/>
-	상품명 : <input type="text" name="g_name"><br/>
-	가격 검색 :
-	<input type="text" name="price_min"> ~
-	<input type="text" name="price_max"><br/>
 	<button type="submit">검색버튼</button>
 </form>
 
