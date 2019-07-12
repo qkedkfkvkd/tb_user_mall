@@ -32,7 +32,7 @@
 </tr>
 <%
 	Gdao dao = new Gdao();
-	ArrayList<Goods> goodlist = dao.gSearchDateGnamePrice(g);
+	ArrayList<Goods> goodlist = dao.gSearchSort(g);
 	
 	System.out.println(goodlist + " <- goodlist   goods_search_list.jsp");
 	System.out.println(goodlist.size() + " <- goodlist.size()   goods_search_list.jsp");

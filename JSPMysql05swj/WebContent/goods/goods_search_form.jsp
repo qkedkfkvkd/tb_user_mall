@@ -21,6 +21,10 @@
 	가격 검색 :
 	<input type="text" name="price_min"> ~
 	<input type="text" name="price_max"><br/>
+	<select name="sort">
+		<option value="asc" selected="selected">가격 오름차순</option>
+		<option value="desc">가격 내림차순</option>
+	</select><br/>
 	<button type="submit">검색버튼</button>
 </form>
 
