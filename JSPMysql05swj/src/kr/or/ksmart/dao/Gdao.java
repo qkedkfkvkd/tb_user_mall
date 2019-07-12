@@ -4,11 +4,58 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import kr.or.ksmart.driverdb.DriverDB;
 import kr.or.ksmart.dto.Goods;
 
 public class Gdao {
+	
+	// 상품검색(상품 테이블만)_기간별
+	public ArrayList<Goods> gSearchDate(Goods g) throws ClassNotFoundException {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		ArrayList<Goods> goodlist = null;
+		
+		try{
+			DriverDB db = new DriverDB();
+			conn = db.driverDbcon();
+			System.out.println(conn + "<-- conn   mSearchDate(Goods)   Gdao.java");
+			
+			String sql = "SELECT g_code, g_name, g_cate, g_price, g_date FROM tb_goods "
+					   + "WHERE DATE_FORMAT(g_date,'%Y-%m-%d') BETWEEN ? AND ? ";
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, g.getDate_min());
+			pstmt.setString(2, g.getDate_max());
+			System.out.println(pstmt + "<-- pstmt   mSearchDate(Goods)   Gdao.java");
+			
+			rs = pstmt.executeQuery();
+			System.out.println(rs + "<-- rs   mSearchDate(Goods)   Gdao.java");
+			
+			goodlist = new ArrayList<>();
+			
+			while(rs.next()){
+				Goods goods = new Goods();
+				goods.setG_code(rs.getString("g_code"));
+				goods.setG_name(rs.getString("g_name"));
+				goods.setG_cate(rs.getString("g_cate"));
+				goods.setG_price(rs.getString("g_price"));
+				goods.setG_date(rs.getString("g_date"));
+				
+				goodlist.add(goods);
+			}
+			
+		} catch(SQLException ex) {
+			ex.printStackTrace();
+		} finally {
+			if (rs != null) try { rs.close(); } catch(SQLException ex) {}
+			if (pstmt != null) try { pstmt.close(); } catch(SQLException ex) {}
+			if (conn != null) try { conn.close(); } catch(SQLException ex) {}
+		}
+		return goodlist;
+	}
 	
 	// 상품 등록 하기
 	public void gInsert(Goods g) {
