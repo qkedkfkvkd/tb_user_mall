@@ -16,6 +16,7 @@
 	Connection conn = dbcon.driverDbcon();
 	Mdao dao = new Mdao();
 	dao.mInsert(m, conn);
+	// 회원 추가 폼에서 입력된 정보가 있는 User 객체를 매개변수로 넘겨주며 회원 추가 메소드 호출
 	
 	//response.sendRedirect(request.getContextPath() + "/userlist/user_list.jsp");
 	response.sendRedirect(request.getContextPath() + "/usersearch/user_search_list.jsp");

@@ -23,6 +23,7 @@
 	
 	Mdao mdao = new Mdao();
 	User mem = mdao.mSelectforUpdate(u_id);
+	// 넘겨 받은 회원 아이디에 해당하는 회원 레코드 객체 리턴해주는 메소드 호출
 %>
 
 <form action="<%= request.getContextPath() %>/userupdate/user_update_pro.jsp" method="post">

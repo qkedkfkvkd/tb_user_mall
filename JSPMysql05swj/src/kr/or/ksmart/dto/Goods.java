@@ -1,23 +1,23 @@
 package kr.or.ksmart.dto;
 
 public class Goods {
-	private String g_code;
-	private String u_id;
-	private String g_name;
-	private String g_cate;
-	private String g_price;
-	private String g_color;
-	private String g_size;
-	private String g_date;
-	private String g_desc;
+	private String g_code;			// 상품 코드(기본키)
+	private String u_id;			// 판매자 아이디(외래키 테이블:회원)
+	private String g_name;			// 상품 이름
+	private String g_cate;			// 카테고리
+	private String g_price;			// 가격
+	private String g_color;			// 색상
+	private String g_size;			// 사이즈
+	private String g_date;			// 등록일
+	private String g_desc;			// 상세 설명
 	
 	// 검색 전용 변수들 선언
-	private String orderby;
-	private String sort;
-	private String date_min;
-	private String date_max;
-	private String price_min;
-	private String price_max;
+	private String orderby;			// 정렬 기준
+	private String sort;			// 정렬 방식 (ASC, DESC)
+	private String date_min;		// 최소 등록일자
+	private String date_max;		// 최대 등록일자
+	private String price_min;		// 최소 가격대
+	private String price_max;		// 최대 가격대
 	
 	
 	public String getG_code() {

@@ -10,6 +10,6 @@
 
 <%
 	Mdao dao = new Mdao();
-	dao.mUpdate(m);
+	dao.mUpdate(m);		// 수정 폼에서 변경한 정보가 있는 User 객체를 넘겨주면서 해당 레코드 수정
 	response.sendRedirect(request.getContextPath() + "/usersearch/user_search_list.jsp");
 %>

@@ -33,6 +33,7 @@
 <%
 	Gdao dao = new Gdao();
 	ArrayList<Goods> goodlist = dao.gSearchSort(g);
+								// 검색하기 위해 폼에서 입력한 정보가 있는 Goods 객체를 넘겨주고 검색 결과 리스트를 반환받는 메소드 호출
 	
 	System.out.println(goodlist + " <- goodlist   goods_search_list.jsp");
 	System.out.println(goodlist.size() + " <- goodlist.size()   goods_search_list.jsp");

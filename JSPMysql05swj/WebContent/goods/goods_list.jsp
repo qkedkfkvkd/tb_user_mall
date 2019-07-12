@@ -32,6 +32,7 @@
 <%
 	Gdao dao = new Gdao();
 	ArrayList<Goods> glist = dao.goodsAllSelect();
+							// 상품 레코드 전체가 있는 배열 객체를 리턴하는 메소드를 호출한다.
 	
 	for(int i=0; i<glist.size(); i++) {
 		Goods g = glist.get(i);

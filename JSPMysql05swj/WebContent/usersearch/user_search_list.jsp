@@ -44,7 +44,7 @@
 	
 	Mdao dao = new Mdao();
 	ArrayList<User> memlist = dao.mSearch(sk, sv);
-	
+							// 검색하기 위해 폼에서 입력한 정보가 있는 User 객체를 넘겨주고 검색 결과 리스트를 반환받는 메소드 호출
 	for(int i=0; i<memlist.size(); i++) {
 		User user = memlist.get(i);
 %>

@@ -16,6 +16,6 @@
 
 <%
 	Gdao dao = new Gdao();
-	dao.gInsert(g);
+	dao.gInsert(g);		// 상품 등록 폼에서 입력된 정보가 있는 Goods 객체를 매개변수로 넘겨주며 상품 추가 메소드 호출
 	response.sendRedirect(request.getContextPath() + "/goods/goods_list.jsp");
 %>

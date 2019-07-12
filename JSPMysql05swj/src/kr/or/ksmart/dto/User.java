@@ -2,13 +2,13 @@ package kr.or.ksmart.dto;
 
 public class User {
 	// 전역 변수, 프로퍼티, 멤버 벨류
-	private String u_id;
-	private String u_pw;
-	private String u_level;
-	private String u_name;
-	private String u_email;
-	private String u_phone;
-	private String u_addr;
+	private String u_id;			// 아이디 (기본키)
+	private String u_pw;			// 비번
+	private String u_level;			// 권한
+	private String u_name;			// 이름
+	private String u_email;			// 이메일
+	private String u_phone;			// 폰번호
+	private String u_addr;			// 주소
 	
 	// 된 상태에서 바꿔보고 테스트해봐서 에러메세지 여러개 접해보기.
 	public String getU_id() {

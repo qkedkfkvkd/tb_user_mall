@@ -32,6 +32,7 @@
 <%
 	Mdao dao = new Mdao();
 	ArrayList<User> memlist = dao.mAllSelect();
+							// 회원 레코드 전체가 있는 배열 객체를 리턴하는 메소드를 호출한다.
 	
 	System.out.println(memlist + " <- memlist   user_list.jsp");
 	System.out.println(memlist.size() + " <- memlist.size()   user_list.jsp");

@@ -9,7 +9,7 @@
 
 <%
 	Gdao dao = new Gdao();
-	dao.gUpdate(g);
+	dao.gUpdate(g);		// 수정 폼에서 변경한 정보가 있는 Goods 객체를 넘겨주면서 해당 레코드 수정
 	response.sendRedirect(request.getContextPath() + "/goods/goods_search_form.jsp");
 %>
 

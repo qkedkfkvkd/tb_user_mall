@@ -22,6 +22,7 @@
 	
 	Gdao dao = new Gdao();
 	Goods g = dao.gDetail(g_code);
+	// 넘겨 받은 상품 코드에 해당하는 상품 레코드 객체 리턴해주는 메소드 호출
 %>
 
 <h3>제품 상세보기</h3>

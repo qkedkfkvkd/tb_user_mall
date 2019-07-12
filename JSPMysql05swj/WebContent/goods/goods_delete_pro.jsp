@@ -8,7 +8,7 @@
 	System.out.println(g_code + " <- g_code   goods_delete_pro.jsp");
 	
 	Gdao dao = new Gdao();
-	dao.gDelete(g_code);
+	dao.gDelete(g_code); // 넘겨 받은 상품 코드에 해당하는 상품 레코드 삭제 메소드 호출
 	response.sendRedirect(request.getContextPath() + "/goods/goods_search_form.jsp");
 %>
 

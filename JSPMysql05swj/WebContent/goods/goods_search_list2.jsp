@@ -37,7 +37,9 @@
 <%
 	request.setCharacterEncoding("euc-kr");
 	Gdao dao = new Gdao();
-	Map<String, Object> map = dao.gSearchJoinDateGname(g);
+	Map<String, Object> map = dao.gSearchJoinDateGnamePrice(g);
+					// 리턴받아야하는 객체가 회원 리스트, 상품 리스트 두개 이므로
+					// 모든 객체를 담을 수 있는 커다란 박스 Map에 회원 리스트와 상품리스트를 담아서 리턴한다.
 	
 	ArrayList<User> mlist = (ArrayList<User>)map.get("mlist");
 	ArrayList<Goods> glist = (ArrayList<Goods>)map.get("glist");
