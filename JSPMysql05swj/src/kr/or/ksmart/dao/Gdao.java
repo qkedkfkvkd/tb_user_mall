@@ -14,6 +14,83 @@ import kr.or.ksmart.dto.User;
 
 public class Gdao {
 	
+	// 상품검색-조인쿼리(상품 테이블만)_기간별_상품명_가격구간_가격 정렬
+		public Map<String, Object> gSearchJoinSort(Goods g) throws ClassNotFoundException {
+			Connection conn = null;
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			Map<String, Object> map = null;
+			
+			try{
+				DriverDB db = new DriverDB();
+				conn = db.driverDbcon();
+				// 커넥션 객체를 얻어온다.
+				System.out.println(conn + "<-- conn   gSearchJoinSort()   Gdao.java");
+				
+				String sql = "SELECT u.u_id, u.u_name, "
+						   + "g.g_code, g.g_name, g.g_cate, g.g_price, g.g_date "
+						   + "FROM tb_user AS u INNER JOIN tb_goods AS g "
+						   + "ON u.u_id = g.u_id "
+						   + "AND g.g_name = ? "
+						   + "AND DATE_FORMAT(g_date,'%Y-%m-%d') "
+						   + "BETWEEN ? AND ? "
+						   + "and g.g_price*1 BETWEEN ? AND ? "
+						   + "ORDER BY g_price*1 " + g.getSort();
+				// 회원 테이블에서 회원 아이디와 회원 이름을 가져오고
+				// 상품 테이블에서 상품 코드, 상품 이름, 카테고리, 가격, 등록일을 가져온다.
+				// 회원 테이블의 별명을 u로 하고 상품 테이블의 별명을 g로 하여
+				// 회원테이블의 회원 아이디와 상품 테이블의 판매자 아이디가 같을 조건으로 inner join을 수행한다.
+				// 특정 상품 이름을 넣어주고 등록일을 날짜 포맷하여 기간 구간을 넣어준다.
+				// 가격 컬럼이 varchar 이므로 sql 수행하면서 숫자로 변환될 수 있게 *1을 하여 가격 구간을 넣어주고
+				// 가격 컬럼으로 ASC, DESC (오름차순, 내림차순) 정렬을 수행한다.
+				
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setString(1, g.getG_name());		// 상품 이름
+				pstmt.setString(2, g.getDate_min());	// 최소 등록일 부터
+				pstmt.setString(3, g.getDate_max());	// 최대 등록일 까지
+				pstmt.setInt(4, Integer.parseInt(g.getPrice_min()));	// 최소 가격대 부터
+				pstmt.setInt(5, Integer.parseInt(g.getPrice_max()));	// 최대 가격대 까지
+				System.out.println(pstmt + "<-- pstmt   gSearchJoinSort()   Gdao.java");
+				
+				rs = pstmt.executeQuery();
+				System.out.println(rs + "<-- rs   gSearchJoinSort()   Gdao.java");
+				
+				map = new HashMap<String, Object>();
+				
+				ArrayList<User> mlist = new ArrayList<>();		// 회원을 저장할 회원 리스트
+				ArrayList<Goods> glist = new ArrayList<>();		// 상품을 저장할 상품 리스트
+				
+				while(rs.next()){
+					User mem = new User();		// 반복문의 시작지점부터 객체를 선언하고 추가하는 것을 반복한다.
+					Goods goods = new Goods();
+					
+					mem.setU_id(rs.getString("u_id"));			// 회원 아이디
+					mem.setU_name(rs.getString("u_name"));		// 회원 이름
+					
+					goods.setG_code(rs.getString("g_code"));	// 상품 코드
+					goods.setG_name(rs.getString("g_name"));	// 상품 이름
+					goods.setG_cate(rs.getString("g_cate"));	// 카테고리
+					goods.setG_price(rs.getString("g_price"));	// 가격
+					goods.setG_date(rs.getString("g_date"));	// 등록일
+					
+					mlist.add(mem);		// 회원 객체 하나씩 추가
+					glist.add(goods);	// 상품 객체 하나씩 추가
+				}
+				
+				map.put("mlist", mlist);	// 회원 리스트 객체를 "mlist" 키값으로 넣어준다.
+				map.put("glist", glist);	// 상품 리스트 객체를 "glist" 키값으로 넣어준다.
+				
+			} catch(SQLException ex) {
+				ex.printStackTrace();
+			} finally {
+				if (rs != null) try { rs.close(); } catch(SQLException ex) {}
+				if (pstmt != null) try { pstmt.close(); } catch(SQLException ex) {}
+				if (conn != null) try { conn.close(); } catch(SQLException ex) {}
+			}
+			return map;
+		}
+	
+	
 	// 상품검색-조인쿼리(상품 테이블만)_기간별_상품명_가격구간
 	public Map<String, Object> gSearchJoinDateGnamePrice(Goods g) throws ClassNotFoundException {
 		Connection conn = null;
